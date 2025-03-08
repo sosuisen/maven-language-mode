@@ -1,0 +1,100 @@
+{
+    "name": "Maven XML Theme",
+    "type": "dark",
+    "colors": {},
+    "tokenColors": [
+        {
+            "scope": "maven.tag.non-highlight",
+            "settings": {
+                "foreground": "#808080"
+            }
+        },
+        {
+            "scope": "maven.tag.group",
+            "settings": {
+                "foreground": "#d86565",
+                "fontStyle": "bold"
+            }
+        },
+        {
+            "scope": "maven.tag.member",
+            "settings": {
+                "foreground": "#ec8841"
+            }
+        },
+        {
+            "scope": "maven.tag.execution",
+            "settings": {
+                "foreground": "#e294fe"
+            }
+        },
+        {
+            "scope": "maven.tag.fqdn",
+            "settings": {
+                "foreground": "#85ffba"
+            }
+        },
+        {
+            "scope": "maven.tag.build",
+            "settings": {
+                "foreground": "#85ffba"
+            }
+        },
+        {
+            "scope": "maven.tag.standard",
+            "settings": {
+                "foreground": "#569CD6"
+            }
+        },
+        {
+            "scope": "maven.tag.custom",
+            "settings": {
+                "foreground": "#d0c480"
+            }
+        },
+        {
+            "scope": "maven.comment",
+            "settings": {
+                "foreground": "#808080"
+            }
+        },
+        {
+            "scope": "maven.ref",
+            "settings": {
+                "foreground": "#db87f8",
+                "fontStyle": "italic"
+            }
+        },
+        {
+            "scope": "maven.tag.property",
+            "settings": {
+                "foreground": "#db87f8",
+                "fontStyle": "italic"
+            }
+        },
+        {
+            "scope": "maven.attribute.xmlns",
+            "settings": {
+                "foreground": "#6f7c82"
+            }
+        },
+        {
+            "scope": "maven.attribute.value",
+            "settings": {
+                "foreground": "#7f6053"
+            }
+        },
+        {
+            "scope": "punctuation.maven.decl",
+            "settings": {
+                "foreground": "#808080"
+            }
+        },
+        {
+            "scope": "maven.attribute.decl",
+            "settings": {
+                "foreground": "#6f7c82"
+            }
+        }
+    ]
+} 

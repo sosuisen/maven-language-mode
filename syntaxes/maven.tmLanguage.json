@@ -1,0 +1,342 @@
+{
+    "name": "Maven POM",
+    "scopeName": "text.xml.maven",
+    "fileTypes": [
+        "pom",
+        "xml"
+    ],
+    "patterns": [
+        {
+            "include": "#xml-decl"
+        },
+        {
+            "include": "#project-tag"
+        },
+        {
+            "include": "#non-highlight-tags"
+        },
+        {
+            "include": "#properties-children"
+        },
+        {
+            "include": "#group-tag"
+        },
+        {
+            "include": "#member-tag"
+        },
+        {
+            "include": "#execution-tags"
+        },
+        {
+            "include": "#fqdn-tags"
+        },
+        {
+            "include": "#build-tags"
+        },
+        {
+            "include": "#maven-tags"
+        },
+        {
+            "include": "#xml-tags"
+        },
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#ref"
+        }
+    ],
+    "repository": {
+        "project-tag": {
+            "patterns": [
+                {
+                    "begin": "(<)(project)\\b",
+                    "end": "(>)",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.non-highlight"
+                        }
+                    },
+                    "endCaptures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "match": "(xmlns(?::[a-z]+)?)\\s*=\\s*(\"[^\"]*\")",
+                            "captures": {
+                                "1": {
+                                    "name": "maven.attribute.xmlns"
+                                },
+                                "2": {
+                                    "name": "maven.attribute.value"
+                                }
+                            }
+                        },
+                        {
+                            "match": "(xsi:schemaLocation)\\s*=\\s*(\"[^\"]*\")",
+                            "captures": {
+                                "1": {
+                                    "name": "maven.attribute.xmlns"
+                                },
+                                "2": {
+                                    "name": "maven.attribute.value"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "match": "(</)(project)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.non-highlight"
+                        },
+                        "3": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "non-highlight-tags": {
+            "patterns": [
+                {
+                    "match": "(</?)(modelVersion|project)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.non-highlight"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "build-tags": {
+            "patterns": [
+                {
+                    "match": "(</?)(build)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.build"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "properties-children": {
+            "patterns": [
+                {
+                    "begin": "(<properties\\b[^>]*>)",
+                    "end": "(</properties>)",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "maven.tag.group"
+                        }
+                    },
+                    "endCaptures": {
+                        "1": {
+                            "name": "maven.tag.group"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "match": "(</?)[a-zA-Z0-9:\\.-]+(>)",
+                            "captures": {
+                                "1": {
+                                    "name": "punctuation.maven.tag"
+                                },
+                                "0": {
+                                    "name": "maven.tag.property"
+                                }
+                            }
+                        },
+                        {
+                            "include": "#comments"
+                        },
+                        {
+                            "include": "#ref"
+                        }
+                    ]
+                }
+            ]
+        },
+        "group-tag": {
+            "patterns": [
+                {
+                    "match": "(</?)(properties|dependencies|plugins|profiles)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.group"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "member-tag": {
+            "patterns": [
+                {
+                    "match": "(</?)(property|dependency|plugin|profile)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.member"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "execution-tags": {
+            "patterns": [
+                {
+                    "match": "(</?)(executions|execution|goals|goal|phase)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.execution"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "fqdn-tags": {
+            "patterns": [
+                {
+                    "match": "(</?)(groupId|artifactId|version)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.fqdn"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "maven-tags": {
+            "patterns": [
+                {
+                    "match": "(</?)(packaging|scope|parent|configuration|phase|modules|module)\\b([^>]*)(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "2": {
+                            "name": "maven.tag.standard"
+                        },
+                        "4": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "xml-tags": {
+            "patterns": [
+                {
+                    "match": "(</?)[a-zA-Z0-9:\\.-]+(>)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.maven.tag"
+                        },
+                        "0": {
+                            "name": "maven.tag.custom"
+                        },
+                        "2": {
+                            "name": "punctuation.maven.tag"
+                        }
+                    }
+                }
+            ]
+        },
+        "comments": {
+            "patterns": [
+                {
+                    "name": "maven.comment",
+                    "begin": "<!--",
+                    "end": "-->",
+                    "contentName": "maven.comment"
+                }
+            ]
+        },
+        "ref": {
+            "patterns": [
+                {
+                    "name": "maven.ref",
+                    "begin": "\\$\\{",
+                    "end": "\\}",
+                    "contentName": "maven.ref"
+                }
+            ]
+        },
+        "xml-decl": {
+            "patterns": [
+                {
+                    "begin": "<\\?xml",
+                    "end": "\\?>",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.maven.decl"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.maven.decl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "match": "(version|encoding)\\s*=\\s*(\"[^\"]*\")",
+                            "captures": {
+                                "1": {
+                                    "name": "maven.attribute.decl"
+                                },
+                                "2": {
+                                    "name": "maven.attribute.value"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "name": "maven-language-mode",
+    "displayName": "Maven Language Mode",
+    "description": "Language support for Maven POM files",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "activationEvents": [
+        "onLanguage:maven"
+    ],
+    "categories": [
+        "Programming Languages",
+        "Themes"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "maven",
+                "aliases": [
+                    "Maven",
+                    "maven"
+                ],
+                "extensions": [
+                    ".pom",
+                    "pom.xml"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "maven",
+                "scopeName": "text.xml.maven",
+                "path": "./syntaxes/maven.tmLanguage.json"
+            }
+        ],
+        "themes": [
+            {
+                "label": "Maven XML",
+                "uiTheme": "vs-dark",
+                "path": "./themes/maven-color-theme.json"
+            }
+        ]
+    },
+    "main": "./out/extension.js",
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.85.0",
+        "@types/node": "^16.18.34",
+        "@typescript-eslint/eslint-plugin": "^6.7.0",
+        "@typescript-eslint/parser": "^6.7.0",
+        "eslint": "^8.26.0",
+        "typescript": "^5.2.2"
+    }
+}
