@@ -72,29 +72,5 @@
                 "fontStyle": "italic"
             }
         },
-        {
-            "scope": "maven.attribute.xmlns",
-            "settings": {
-                "foreground": "#6f7c82"
-            }
-        },
-        {
-            "scope": "maven.attribute.value",
-            "settings": {
-                "foreground": "#7f6053"
-            }
-        },
-        {
-            "scope": "punctuation.maven.decl",
-            "settings": {
-                "foreground": "#808080"
-            }
-        },
-        {
-            "scope": "maven.attribute.decl",
-            "settings": {
-                "foreground": "#6f7c82"
-            }
-        }
     ]
 } 
