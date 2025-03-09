@@ -2,6 +2,12 @@
     "name": "maven-language-mode",
     "displayName": "Maven Language Mode",
     "description": "Language support for Maven POM files",
+    "publisher": "sosuisha",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sosuisen/maven-language-mode"
+    },
+    "icon": "images/icon.png",
     "version": "1.0.0",
     "engines": {
         "vscode": "^1.96.0"
