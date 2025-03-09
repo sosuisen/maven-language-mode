@@ -23,5 +23,9 @@
         ["{", "}"],
         ["[", "]"],
         ["(", ")"]
-    ]
+    ],
+    "indentationRules": {
+        "increaseIndentPattern": "<[^/>]*>$",
+        "decreaseIndentPattern": "^</"
+    },
 } 

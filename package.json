@@ -6,9 +6,6 @@
     "engines": {
         "vscode": "^1.85.0"
     },
-    "activationEvents": [
-        "onLanguage:maven"
-    ],
     "categories": [
         "Programming Languages",
         "Themes"
