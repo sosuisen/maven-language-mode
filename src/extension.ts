@@ -8,12 +8,16 @@ export function activate(context: vscode.ExtensionContext) {
             const completionItems: vscode.CompletionItem[] = [];
 
             const mavenElements = [
-                'project', 'dependencyManagement', 'dependencies', 'dependency', 'groupId', 'artifactId',
-                'version', 'description', 'packaging', 'scope', 'parent', 'properties',
-                'build', 'pluginManagement', 'plugins', 'plugin', 'executions', 'execution',
-                'goals', 'goal', 'configuration', 'phase', 'modules', 'module',
-                'profiles', 'profile', 'licenses', 'license', 'developers', 'developer',
-                'scm', 'url'
+                'project', 'modelVersion', 'properties',
+                'extensions', 'dependencyManagement', 'dependencies', 'pluginManagement', 'plugins', 'profiles', 'modules', 'repositories', 'pluginRepositories', 'resources', 'testResources', 'licenses', 'developers', 'contributors', 'notifiers', 'mailingLists',
+                'property', 'extension', 'dependency', 'plugin', 'profile', 'module', 'repository', 'pluginRepository', 'resource', 'testResource', 'license', 'developer', 'contributor', 'notifier', 'mailingList',
+                'executions', 'execution', 'goals', 'goal', 'phase',
+                'groupId', 'artifactId', 'version',
+                'packaging', 'parent',
+                'build', 'reporting',
+                'name', 'description', 'url', 'inceptionYear', 'licenses', 'organization', 'developers', 'contributors',
+                'issueManagement', 'ciManagement', 'scm', 'prerequisites', 'distributionManagement',
+                'configuration', 'activation',
             ];
 
             mavenElements.forEach(element => {
@@ -147,12 +151,14 @@ function parseXml(xml: string): XmlNode {
 
             if (inTag) {
                 const rawContent = xml.substring(tagStart, i + 1);
+                const isSelfClosing = current.trim().endsWith('/') || xml[i - 1] === '/';
+                const tagContent = isSelfClosing ? current.replace(/\s*\/$/, '') : current;
                 // Empty element
-                if (xml[i - 1] === '/') {
+                if (isSelfClosing) {
                     const node: XmlNode = {
                         type: 'element',
-                        name: current.split(' ')[0],
-                        attributes: parseAttributes(current),
+                        name: tagContent.split(/\s+/)[0],
+                        attributes: parseAttributes(tagContent),
                         children: [],
                         rawTagContent: rawContent
                     };
@@ -161,7 +167,7 @@ function parseXml(xml: string): XmlNode {
                     // Element
                     const node: XmlNode = {
                         type: 'element',
-                        name: current.split(' ')[0],
+                        name: current.split(/\s+/)[0],
                         attributes: parseAttributes(current),
                         children: [],
                         rawTagContent: rawContent
@@ -230,16 +236,35 @@ function parseAttributes(tagContent: string): Map<string, string> {
     return attrs;
 }
 
-function formatXml(xml: string): string {
-    const root = parseXml(xml);
-    return formatNode(root, 0).trim() + '\n';
-}
-
-function formatNode(node: XmlNode, depth: number): string {
+function formatNode(node: XmlNode, depth: number, parentName?: string): string {
     const indent = '  '.repeat(depth);  // 2 spaces
     let result = '';
 
-    for (const child of node.children) {
+    const groupTags = ['dependencies', 'properties', 'build', 'plugins',
+        'extensions', 'profiles', 'modules', 'pluginManagement', 'dependencyManagement',
+        'repositories', 'pluginRepositories', 'resources', 'testResources',
+        'licenses', 'developers', 'contributors', 'notifiers', 'mailingLists'];
+
+    function isLastElementChild(index: number): boolean {
+        for (let i = index + 1; i < node.children.length; i++) {
+            if (node.children[i].type === 'element') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function shouldAddNewline(tagName: string, isLast: boolean, parentTagName?: string): boolean {
+        if (tagName === 'properties') {
+            return parentTagName === 'project';
+        }
+        return groupTags.includes(tagName) && !isLast;
+    }
+
+    for (let i = 0; i < node.children.length; i++) {
+        const child = node.children[i];
+        const isLastElement = isLastElementChild(i);
+
         if (child.type === 'declaration') {
             result += child.rawTagContent + '\n';
         } else if (child.type === 'comment') {
@@ -259,17 +284,24 @@ function formatNode(node: XmlNode, depth: number): string {
                         result += ` ${key}="${value}"`;
                     });
                 }
-                result += '>';
+                if (child.children.length === 0) {
+                    result += '/>';
+                } else {
+                    result += '>';
+                }
             }
 
             if (child.children.length === 0) {
-                result = result.slice(0, -1) + '/>\n';
+                result += '\n';
             } else if (child.children.length === 1 && child.children[0].type === 'text') {
                 result += child.children[0].content + '</' + child.name + '>\n';
             } else {
                 result += '\n';
-                result += formatNode(child, depth + 1);
+                result += formatNode(child, depth + 1, child.name);
                 result += indent + '</' + child.name + '>\n';
+                if (shouldAddNewline(child.name || '', isLastElement, parentName)) {
+                    result += '\n';
+                }
             }
         } else if (child.type === 'text') {
             if (child.content && child.content.trim()) {
@@ -279,6 +311,11 @@ function formatNode(node: XmlNode, depth: number): string {
     }
 
     return result;
+}
+
+function formatXml(xml: string): string {
+    const root = parseXml(xml);
+    return formatNode(root, 0).trim() + '\n';
 }
 
 export function deactivate() { } 

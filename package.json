@@ -28,7 +28,7 @@
             {
                 "language": "maven",
                 "scopeName": "text.xml.maven",
-                "path": "./syntaxes/maven.tmLanguage.json"
+                "path": "./syntaxes/maven.language.json"
             }
         ],
         "themes": [

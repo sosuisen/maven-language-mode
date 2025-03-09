@@ -41,7 +41,19 @@
             }
         },
         {
-            "scope": "maven.tag.standard",
+            "scope": "maven.tag.basics",
+            "settings": {
+                "foreground": "#569CD6"
+            }
+        },
+        {
+            "scope": "maven.tag.moreinfo",
+            "settings": {
+                "foreground": "#569CD6"
+            }
+        },
+        {
+            "scope": "maven.tag.environment",
             "settings": {
                 "foreground": "#569CD6"
             }
@@ -53,7 +65,7 @@
             }
         },
         {
-            "scope": "maven.comment",
+            "scope": "xml.comment",
             "settings": {
                 "foreground": "#808080"
             }
@@ -63,6 +75,12 @@
             "settings": {
                 "foreground": "#5caece",
                 "fontStyle": "italic"
+            }
+        },
+        {
+            "scope": "maven.tag.configuration",
+            "settings": {
+                "foreground": "#5caece",
             }
         },
         {

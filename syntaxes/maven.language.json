@@ -10,9 +10,6 @@
             "include": "#xml-decl"
         },
         {
-            "include": "#project-tag"
-        },
-        {
             "include": "#non-highlight-tags"
         },
         {
@@ -37,7 +34,7 @@
             "include": "#maven-tags"
         },
         {
-            "include": "#xml-tags"
+            "include": "#custom-tags"
         },
         {
             "include": "#comments"
@@ -47,11 +44,11 @@
         }
     ],
     "repository": {
-        "project-tag": {
+        "xml-decl": {
             "patterns": [
                 {
-                    "begin": "<project\\b",
-                    "end": ">",
+                    "begin": "<\\?xml",
+                    "end": "\\?>",
                     "name": "maven.tag.non-highlight"
                 }
             ]
@@ -59,22 +56,20 @@
         "non-highlight-tags": {
             "patterns": [
                 {
+                    "begin": "<project\\b",
+                    "end": ">",
+                    "name": "maven.tag.non-highlight"
+                },
+                {
+                    "begin": "</project\\b",
+                    "end": ">",
+                    "name": "maven.tag.non-highlight"
+                },
+                {
                     "match": "</?(modelVersion)\\b[^>]*>",
                     "captures": {
                         "0": {
                             "name": "maven.tag.non-highlight"
-                        }
-                    }
-                }
-            ]
-        },
-        "build-tags": {
-            "patterns": [
-                {
-                    "match": "</?(build)\\b[^>]*>",
-                    "captures": {
-                        "0": {
-                            "name": "maven.tag.build"
                         }
                     }
                 }
@@ -115,7 +110,7 @@
         "group-tag": {
             "patterns": [
                 {
-                    "match": "</?(properties|extensions|dependencyManagement|dependencies|pluginManagement|plugins|profiles|profile)\\b[^>]*>",
+                    "match": "</?(properties|extensions|dependencyManagement|dependencies|pluginManagement|plugins|profiles|modules|repositories|pluginRepositories|resources|testResources|licenses|developers|contributors|notifiers|mailingLists)\\b[^>]*>",
                     "captures": {
                         "0": {
                             "name": "maven.tag.group"
@@ -127,7 +122,7 @@
         "member-tag": {
             "patterns": [
                 {
-                    "match": "</?(property|extension|dependency|plugin|profile)\\b[^>]*>",
+                    "match": "</?(property|extension|dependency|plugin|profile|module|repository|pluginRepository|resource|testResource|license|developer|contributor|notifier|mailingList)\\b[^>]*>",
                     "captures": {
                         "0": {
                             "name": "maven.tag.member"
@@ -163,16 +158,48 @@
         "maven-tags": {
             "patterns": [
                 {
-                    "match": "</?(packaging|scope|parent|configuration|phase|modules|module)\\b[^>]*>",
+                    "match": "</?(packaging|parent)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.standard"
+                            "name": "maven.tag.basics"
+                        }
+                    }
+                },
+                {
+                    "match": "</?(build|reporting)\\b[^>]*>",
+                    "captures": {
+                        "0": {
+                            "name": "maven.tag.build"
+                        }
+                    }
+                },
+                {
+                    "match": "</?(name|description|url|inceptionYear|licenses|organization|developers|contributors)\\b[^>]*>",
+                    "captures": {
+                        "0": {
+                            "name": "maven.tag.moreinfo"
+                        }
+                    }
+                },
+                {
+                    "match": "</?(issueManagement|ciManagement|scm|prerequisites|distributionManagement)\\b[^>]*>",
+                    "captures": {
+                        "0": {
+                            "name": "maven.tag.environment"
+                        }
+                    }
+                },
+                {
+                    "match": "</?(configuration|activation)\\b[^>]*>",
+                    "captures": {
+                        "0": {
+                            "name": "maven.tag.configuration"
                         }
                     }
                 }
             ]
         },
-        "xml-tags": {
+        "custom-tags": {
             "patterns": [
                 {
                     "match": "</?.+?>",
@@ -183,10 +210,10 @@
         "comments": {
             "patterns": [
                 {
-                    "name": "maven.comment",
+                    "name": "xml.comment",
                     "begin": "<!--",
                     "end": "-->",
-                    "contentName": "maven.comment"
+                    "contentName": "xml.comment"
                 }
             ]
         },
@@ -197,15 +224,6 @@
                     "begin": "\\$\\{",
                     "end": "\\}",
                     "contentName": "maven.ref"
-                }
-            ]
-        },
-        "xml-decl": {
-            "patterns": [
-                {
-                    "begin": "<\\?xml",
-                    "end": "\\?>",
-                    "name": "maven.tag.non-highlight"
                 }
             ]
         }
