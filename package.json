@@ -2,9 +2,9 @@
     "name": "maven-language-mode",
     "displayName": "Maven Language Mode",
     "description": "Language support for Maven POM files",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "engines": {
-        "vscode": "^1.85.0"
+        "vscode": "^1.96.0"
     },
     "categories": [
         "Programming Languages",
@@ -19,7 +19,6 @@
                     "maven"
                 ],
                 "extensions": [
-                    ".pom",
                     "pom.xml"
                 ],
                 "configuration": "./language-configuration.json"
@@ -49,7 +48,7 @@
         "lint": "eslint src --ext ts"
     },
     "devDependencies": {
-        "@types/vscode": "^1.85.0",
+        "@types/vscode": "^1.96.0",
         "@types/node": "^16.18.34",
         "@typescript-eslint/eslint-plugin": "^6.7.0",
         "@typescript-eslint/parser": "^6.7.0",

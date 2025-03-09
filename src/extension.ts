@@ -3,23 +3,24 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
     console.log('Maven Language Mode is now active');
 
-    // Maven XML要素の補完プロバイダーを登録
     const completionProvider = vscode.languages.registerCompletionItemProvider('maven', {
         provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
             const completionItems: vscode.CompletionItem[] = [];
 
-            // 主要なMaven要素の補完
             const mavenElements = [
-                'project', 'dependencies', 'dependency', 'groupId', 'artifactId',
-                'version', 'packaging', 'scope', 'parent', 'properties',
-                'build', 'plugins', 'plugin', 'executions', 'execution',
-                'goals', 'goal', 'configuration', 'phase', 'modules', 'module'
+                'project', 'dependencyManagement', 'dependencies', 'dependency', 'groupId', 'artifactId',
+                'version', 'description', 'packaging', 'scope', 'parent', 'properties',
+                'build', 'pluginManagement', 'plugins', 'plugin', 'executions', 'execution',
+                'goals', 'goal', 'configuration', 'phase', 'modules', 'module',
+                'profiles', 'profile', 'licenses', 'license', 'developers', 'developer',
+                'scm', 'url'
             ];
 
             mavenElements.forEach(element => {
                 const item = new vscode.CompletionItem(element);
                 item.kind = vscode.CompletionItemKind.Property;
-                item.insertText = new vscode.SnippetString(`${element}>\${1:}\</${element}>`);
+                // last > is not needed because < and > is in "autoClosingPairs"
+                item.insertText = new vscode.SnippetString(`${element}>\${1:}\</${element}`);
                 completionItems.push(item);
             });
 
@@ -27,7 +28,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
     }, '<');
 
-    // フォーマッタープロバイダーを登録
     const formatProvider = vscode.languages.registerDocumentFormattingEditProvider('maven', {
         provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
             const text = document.getText();
@@ -49,7 +49,7 @@ interface XmlNode {
     attributes?: Map<string, string>;
     children: XmlNode[];
     content?: string;
-    rawTagContent?: string;  // タグの生の内容を保持
+    rawTagContent?: string;
 }
 
 function parseXml(xml: string): XmlNode {
@@ -59,20 +59,19 @@ function parseXml(xml: string): XmlNode {
     let inTag = false;
     let inDeclaration = false;
     let inComment = false;
-    let tagStart = 0;  // タグの開始位置を記録
+    let tagStart = 0;
 
     for (let i = 0; i < xml.length; i++) {
         const char = xml[i];
 
-        // コメント開始のチェック
+        // Comment block
         if (char === '<' && xml.substring(i, i + 4) === '<!--') {
             inComment = true;
             current = '';
-            i += 3; // <!-- の残りをスキップ
+            i += 3;
             continue;
         }
 
-        // コメント終了のチェック
         if (inComment && char === '-' && xml.substring(i, i + 3) === '-->') {
             stack[stack.length - 1].children.push({
                 type: 'comment',
@@ -81,17 +80,18 @@ function parseXml(xml: string): XmlNode {
             });
             inComment = false;
             current = '';
-            i += 2; // --> の残りをスキップ
+            i += 2;
             continue;
         }
 
-        // コメント中の場合は内容を収集
         if (inComment) {
             current += char;
             continue;
         }
 
+        // Tag
         if (char === '<') {
+            // Start XML Declaration
             if (xml.substring(i, i + 2) === '<?') {
                 inDeclaration = true;
                 inTag = true;
@@ -99,6 +99,7 @@ function parseXml(xml: string): XmlNode {
                 i++;
                 continue;
             }
+            // End tag
             if (xml.substring(i, i + 2) === '</') {
                 if (current) {
                     stack[stack.length - 1].children.push({
@@ -112,6 +113,7 @@ function parseXml(xml: string): XmlNode {
                 while (i < xml.length && xml[i] !== '>') i++;
                 continue;
             }
+            // Start tag
             inTag = true;
             tagStart = i;
             if (current) {
@@ -126,6 +128,7 @@ function parseXml(xml: string): XmlNode {
         }
 
         if (char === '>') {
+            // End XML Declaration
             if (inDeclaration && xml[i - 1] === '?') {
                 const rawContent = xml.substring(tagStart, i + 1);
                 const decl: XmlNode = {
@@ -144,6 +147,7 @@ function parseXml(xml: string): XmlNode {
 
             if (inTag) {
                 const rawContent = xml.substring(tagStart, i + 1);
+                // Empty element
                 if (xml[i - 1] === '/') {
                     const node: XmlNode = {
                         type: 'element',
@@ -154,6 +158,7 @@ function parseXml(xml: string): XmlNode {
                     };
                     stack[stack.length - 1].children.push(node);
                 } else {
+                    // Element
                     const node: XmlNode = {
                         type: 'element',
                         name: current.split(' ')[0],
@@ -231,22 +236,12 @@ function formatXml(xml: string): string {
 }
 
 function formatNode(node: XmlNode, depth: number): string {
-    const indent = '  '.repeat(depth);  // 4スペースから2スペースに変更
+    const indent = '  '.repeat(depth);  // 2 spaces
     let result = '';
 
     for (const child of node.children) {
         if (child.type === 'declaration') {
-            if (child.rawTagContent) {
-                result += child.rawTagContent + '\n';
-            } else {
-                result += '<?xml';
-                if (child.attributes) {
-                    child.attributes.forEach((value, key) => {
-                        result += ` ${key}="${value}"`;
-                    });
-                }
-                result += '?>\n';
-            }
+            result += child.rawTagContent + '\n';
         } else if (child.type === 'comment') {
             if (child.content) {
                 result += indent + '<!--' + child.content + '-->\n';
@@ -254,9 +249,7 @@ function formatNode(node: XmlNode, depth: number): string {
                 result += indent + '<!--  -->\n';
             }
         } else if (child.type === 'element') {
-            // 開始タグの処理
             if (child.rawTagContent && child.rawTagContent.includes('\n')) {
-                // 改行を含むタグの場合は生の内容を使用（ただし、終了の>は除く）
                 const openTag = child.rawTagContent.substring(0, child.rawTagContent.length - 1);
                 result += indent + openTag.split('\n').join('\n' + indent) + '>';
             } else {
@@ -269,13 +262,12 @@ function formatNode(node: XmlNode, depth: number): string {
                 result += '>';
             }
 
-            // 子要素の処理
             if (child.children.length === 0) {
-                result = result.slice(0, -1) + '/>\n';  // 空要素の場合
+                result = result.slice(0, -1) + '/>\n';
             } else if (child.children.length === 1 && child.children[0].type === 'text') {
-                result += child.children[0].content + '</' + child.name + '>\n';  // インラインテキストの場合
+                result += child.children[0].content + '</' + child.name + '>\n';
             } else {
-                result += '\n';  // 子要素がある場合は改行
+                result += '\n';
                 result += formatNode(child, depth + 1);
                 result += indent + '</' + child.name + '>\n';
             }
