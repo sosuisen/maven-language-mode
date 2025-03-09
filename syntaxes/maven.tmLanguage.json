@@ -2,7 +2,6 @@
     "name": "Maven POM",
     "scopeName": "text.xml.maven",
     "fileTypes": [
-        "pom",
         "xml"
     ],
     "patterns": [
@@ -49,7 +48,7 @@
                 {
                     "begin": "<\\?xml",
                     "end": "\\?>",
-                    "name": "maven.tag.non-highlight"
+                    "name": "comment"
                 }
             ]
         },
@@ -58,18 +57,18 @@
                 {
                     "begin": "<project\\b",
                     "end": ">",
-                    "name": "maven.tag.non-highlight"
+                    "name": "comment"
                 },
                 {
                     "begin": "</project\\b",
                     "end": ">",
-                    "name": "maven.tag.non-highlight"
+                    "name": "comment"
                 },
                 {
                     "match": "</?(modelVersion)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.non-highlight"
+                            "name": "comment"
                         }
                     }
                 }
@@ -82,23 +81,23 @@
                     "end": "(</properties>)",
                     "beginCaptures": {
                         "0": {
-                            "name": "maven.tag.group"
+                            "name": "keyword.control"
                         }
                     },
                     "endCaptures": {
                         "0": {
-                            "name": "maven.tag.group"
+                            "name": "keyword.control"
                         }
                     },
                     "patterns": [
                         {
                             "begin": "<!--",
                             "end": "-->",
-                            "name": "maven.tag.non-highlight"
+                            "name": "comment"
                         },
                         {
                             "match": "</?.+?>",
-                            "name": "maven.tag.property"
+                            "name": "support.constant.color"
                         },
                         {
                             "include": "#ref"
@@ -113,7 +112,7 @@
                     "match": "</?(properties|extensions|dependencyManagement|dependencies|pluginManagement|plugins|profiles|modules|repositories|pluginRepositories|resources|testResources|licenses|developers|contributors|notifiers|mailingLists)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.group"
+                            "name": "keyword.control"
                         }
                     }
                 }
@@ -125,7 +124,7 @@
                     "match": "</?(property|extension|dependency|plugin|profile|module|repository|pluginRepository|resource|testResource|license|developer|contributor|notifier|mailingList)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.member"
+                            "name": "constant.character.set.regexp"
                         }
                     }
                 }
@@ -137,7 +136,7 @@
                     "match": "</?(executions|execution|goals|goal|phase)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.execution"
+                            "name": "keyword.control"
                         }
                     }
                 }
@@ -149,7 +148,7 @@
                     "match": "</?(groupId|artifactId|version)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.fqdn"
+                            "name": "storage.type.java"
                         }
                     }
                 }
@@ -161,7 +160,7 @@
                     "match": "</?(packaging|parent)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.basics"
+                            "name": "keyword"
                         }
                     }
                 },
@@ -169,7 +168,7 @@
                     "match": "</?(build|reporting)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.build"
+                            "name": "keyword"
                         }
                     }
                 },
@@ -177,7 +176,7 @@
                     "match": "</?(name|description|url|inceptionYear|licenses|organization|developers|contributors)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.moreinfo"
+                            "name": "keyword"
                         }
                     }
                 },
@@ -185,7 +184,7 @@
                     "match": "</?(issueManagement|ciManagement|scm|prerequisites|distributionManagement)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.environment"
+                            "name": "keyword"
                         }
                     }
                 },
@@ -193,7 +192,7 @@
                     "match": "</?(configuration|activation)\\b[^>]*>",
                     "captures": {
                         "0": {
-                            "name": "maven.tag.configuration"
+                            "name": "variable"
                         }
                     }
                 }
@@ -203,27 +202,29 @@
             "patterns": [
                 {
                     "match": "</?.+?>",
-                    "name": "maven.tag.custom"
+                    "name": "constant.character"
                 }
             ]
         },
         "comments": {
             "patterns": [
                 {
-                    "name": "xml.comment",
+                    "match": "<!--[^-]*-->",
+                    "name": "comment"
+                },
+                {
                     "begin": "<!--",
                     "end": "-->",
-                    "contentName": "xml.comment"
+                    "name": "comment"
                 }
             ]
         },
         "ref": {
             "patterns": [
                 {
-                    "name": "maven.ref",
                     "begin": "\\$\\{",
                     "end": "\\}",
-                    "contentName": "maven.ref"
+                    "name": "support.constant.color"
                 }
             ]
         }

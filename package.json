@@ -13,8 +13,7 @@
         "vscode": "^1.96.0"
     },
     "categories": [
-        "Programming Languages",
-        "Themes"
+        "Programming Languages"
     ],
     "contributes": {
         "languages": [
@@ -34,14 +33,7 @@
             {
                 "language": "maven",
                 "scopeName": "text.xml.maven",
-                "path": "./syntaxes/maven.language.json"
-            }
-        ],
-        "themes": [
-            {
-                "label": "Maven XML",
-                "uiTheme": "vs-dark",
-                "path": "./themes/maven-color-theme.json"
+                "path": "./syntaxes/maven.tmLanguage.json"
             }
         ]
     },
