@@ -61,14 +61,14 @@
         {
             "scope": "maven.ref",
             "settings": {
-                "foreground": "#db87f8",
+                "foreground": "#5caece",
                 "fontStyle": "italic"
             }
         },
         {
             "scope": "maven.tag.property",
             "settings": {
-                "foreground": "#db87f8",
+                "foreground": "#5caece",
                 "fontStyle": "italic"
             }
         },

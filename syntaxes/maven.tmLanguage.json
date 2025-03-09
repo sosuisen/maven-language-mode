@@ -97,11 +97,13 @@
                     },
                     "patterns": [
                         {
-                            "match": "</?.+?>",
-                            "name": "maven.tag.property"
+                            "begin": "<!--",
+                            "end": "-->",
+                            "name": "maven.tag.non-highlight"
                         },
                         {
-                            "include": "#comments"
+                            "match": "</?.+?>",
+                            "name": "maven.tag.property"
                         },
                         {
                             "include": "#ref"
