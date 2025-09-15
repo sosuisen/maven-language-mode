@@ -1,5 +1,5 @@
 export interface XmlNode {
-    type: 'element' | 'text' | 'declaration' | 'comment';
+    type: 'element' | 'text' | 'declaration' | 'comment' | 'cdata';
     name?: string;
     attributes?: Map<string, string>;
     children: XmlNode[];
@@ -14,6 +14,7 @@ export function parseXml(xml: string): XmlNode {
     let inTag = false;
     let inDeclaration = false;
     let inComment = false;
+    let inCdata = false;
     let tagStart = 0;
 
     for (let i = 0; i < xml.length; i++) {
@@ -40,6 +41,39 @@ export function parseXml(xml: string): XmlNode {
         }
 
         if (inComment) {
+            current += char;
+            continue;
+        }
+
+        // CDATA block
+        if (char === '<' && xml.substring(i, i + 9) === '<![CDATA[') {
+            // Add any preceding text content
+            if (current) {
+                stack[stack.length - 1].children.push({
+                    type: 'text',
+                    content: current,
+                    children: []
+                });
+            }
+            inCdata = true;
+            current = '';
+            i += 8; // Skip '<![CDATA['
+            continue;
+        }
+
+        if (inCdata && char === ']' && xml.substring(i, i + 3) === ']]>') {
+            stack[stack.length - 1].children.push({
+                type: 'cdata',
+                content: current,
+                children: []
+            });
+            inCdata = false;
+            current = '';
+            i += 2; // Skip ']]>'
+            continue;
+        }
+
+        if (inCdata) {
             current += char;
             continue;
         }

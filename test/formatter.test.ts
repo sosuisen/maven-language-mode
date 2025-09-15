@@ -159,5 +159,107 @@ describe('XML Formatter', () => {
             const result = formatXml(input);
             expect(result).toBe(expected);
         });
+
+        test('should handle CDATA sections without formatting content', () => {
+            const input = `<project><description><![CDATA[This is <b>bold</b> text with & special chars]]></description></project>`;
+            
+            const expected = `<project>
+  <description>
+    <![CDATA[This is <b>bold</b> text with & special chars]]>
+  </description>
+</project>
+`;
+            
+            const result = formatXml(input);
+            expect(result).toBe(expected);
+        });
+
+        test('should preserve CDATA formatting and newlines', () => {
+            const input = `<project><script><![CDATA[
+  function test() {
+    return true;
+  }
+]]></script></project>`;
+            
+            const expected = `<project>
+  <script>
+    <![CDATA[
+  function test() {
+    return true;
+  }
+]]>
+  </script>
+</project>
+`;
+            
+            const result = formatXml(input);
+            expect(result).toBe(expected);
+        });
+
+        test('should handle multiple CDATA sections', () => {
+            const input = `<project><![CDATA[First CDATA]]><groupId>test</groupId><![CDATA[Second CDATA]]></project>`;
+            
+            const expected = `<project>
+  <![CDATA[First CDATA]]>
+  <groupId>test</groupId>
+  <![CDATA[Second CDATA]]>
+</project>
+`;
+            
+            const result = formatXml(input);
+            expect(result).toBe(expected);
+        });
+
+        test('should handle empty CDATA sections', () => {
+            const input = `<project><description><![CDATA[]]></description></project>`;
+            
+            const expected = `<project>
+  <description>
+    <![CDATA[]]>
+  </description>
+</project>
+`;
+            
+            const result = formatXml(input);
+            expect(result).toBe(expected);
+        });
+
+        test('should handle CDATA with mixed content', () => {
+            const input = `<project>Regular text<![CDATA[CDATA content]]>More text</project>`;
+            
+            const expected = `<project>
+  Regular text
+  <![CDATA[CDATA content]]>
+  More text
+</project>
+`;
+            
+            const result = formatXml(input);
+            expect(result).toBe(expected);
+        });
+
+        test('should handle CDATA in complex Maven structure', () => {
+            const input = `<project><properties><property.name><![CDATA[<test>value</test>]]></property.name></properties><dependencies><dependency><version><![CDATA[1.0-SNAPSHOT]]></version></dependency></dependencies></project>`;
+            
+            const expected = `<project>
+  <properties>
+    <property.name>
+      <![CDATA[<test>value</test>]]>
+    </property.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <version>
+        <![CDATA[1.0-SNAPSHOT]]>
+      </version>
+    </dependency>
+  </dependencies>
+</project>
+`;
+            
+            const result = formatXml(input);
+            expect(result).toBe(expected);
+        });
     });
 });

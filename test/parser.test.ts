@@ -120,6 +120,79 @@ describe('XML Parser', () => {
             expect(plugin.name).toBe('plugin');
             expect(plugin.children).toHaveLength(0);
         });
+
+        test('should parse CDATA sections', () => {
+            const xml = '<project><description><![CDATA[This is <b>bold</b> text with & special chars]]></description></project>';
+            const result = parseXml(xml);
+            
+            const project = result.children[0];
+            const description = project.children[0];
+            
+            expect(description.name).toBe('description');
+            expect(description.children).toHaveLength(1);
+            
+            const cdata = description.children[0];
+            expect(cdata.type).toBe('cdata');
+            expect(cdata.content).toBe('This is <b>bold</b> text with & special chars');
+        });
+
+        test('should parse CDATA with newlines and formatting', () => {
+            const xml = '<project><script><![CDATA[\n  function test() {\n    return true;\n  }\n]]></script></project>';
+            const result = parseXml(xml);
+            
+            const project = result.children[0];
+            const script = project.children[0];
+            const cdata = script.children[0];
+            
+            expect(cdata.type).toBe('cdata');
+            expect(cdata.content).toBe('\n  function test() {\n    return true;\n  }\n');
+        });
+
+        test('should parse multiple CDATA sections', () => {
+            const xml = '<project><![CDATA[First]]><groupId>test</groupId><![CDATA[Second]]></project>';
+            const result = parseXml(xml);
+            
+            const project = result.children[0];
+            expect(project.children).toHaveLength(3);
+            
+            expect(project.children[0].type).toBe('cdata');
+            expect(project.children[0].content).toBe('First');
+            
+            expect(project.children[1].type).toBe('element');
+            expect(project.children[1].name).toBe('groupId');
+            
+            expect(project.children[2].type).toBe('cdata');
+            expect(project.children[2].content).toBe('Second');
+        });
+
+        test('should parse empty CDATA sections', () => {
+            const xml = '<project><![CDATA[]]></project>';
+            const result = parseXml(xml);
+            
+            const project = result.children[0];
+            expect(project.children).toHaveLength(1);
+            
+            const cdata = project.children[0];
+            expect(cdata.type).toBe('cdata');
+            expect(cdata.content).toBe('');
+        });
+
+        test('should handle CDATA with mixed content', () => {
+            const xml = '<project>Text before<![CDATA[CDATA content]]>Text after</project>';
+            const result = parseXml(xml);
+            
+            const project = result.children[0];
+            expect(project.children).toHaveLength(3);
+            
+            expect(project.children[0].type).toBe('text');
+            expect(project.children[0].content).toBe('Text before');
+            
+            expect(project.children[1].type).toBe('cdata');
+            expect(project.children[1].content).toBe('CDATA content');
+            
+            expect(project.children[2].type).toBe('text');
+            expect(project.children[2].content).toBe('Text after');
+        });
     });
 
     describe('parseAttributes', () => {

@@ -85,6 +85,8 @@ export function formatNode(node: XmlNode, depth: number, parentName?: string): s
             } else {
                 result += indent + '<!--  -->\n';
             }
+        } else if (child.type === 'cdata') {
+            result += indent + '<![CDATA[' + (child.content || '') + ']]>\n';
         } else if (child.type === 'element') {
             if (child.rawTagContent && child.rawTagContent.includes('\n')) {
                 const openTag = child.rawTagContent.substring(0, child.rawTagContent.length - 1);
