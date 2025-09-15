@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(completionProvider, formatProvider);
 }
 
-function formatNode(node: XmlNode, depth: number, parentName?: string): string {
+export function formatNode(node: XmlNode, depth: number, parentName?: string): string {
     const indent = '  '.repeat(depth);  // 2 spaces
     let result = '';
 
@@ -125,7 +125,7 @@ function formatNode(node: XmlNode, depth: number, parentName?: string): string {
     return result;
 }
 
-function formatXml(xml: string): string {
+export function formatXml(xml: string): string {
     const root = parseXml(xml);
     return formatNode(root, 0).trim() + '\n';
 }

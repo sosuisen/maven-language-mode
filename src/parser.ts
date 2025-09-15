@@ -65,7 +65,9 @@ export function parseXml(xml: string): XmlNode {
                 }
                 current = '';
                 stack.pop();
-                while (i < xml.length && xml[i] !== '>') i++;
+                while (i < xml.length && xml[i] !== '>') {
+                    i++;
+                }
                 continue;
             }
             // Start tag
@@ -143,7 +145,9 @@ export function parseXml(xml: string): XmlNode {
 export function parseAttributes(tagContent: string): Map<string, string> {
     const attrs = new Map<string, string>();
     const parts = tagContent.split(/\s+/);
-    if (parts.length <= 1) return attrs;
+    if (parts.length <= 1) {
+        return attrs;
+    }
 
     let currentAttr = '';
     let currentValue = '';
@@ -154,7 +158,9 @@ export function parseAttributes(tagContent: string): Map<string, string> {
 
     for (let i = 1; i < parts.length; i++) {
         const part = parts[i];
-        if (!part) continue;
+        if (!part) {
+            continue;
+        }
 
         if (!inValue) {
             if (waitingForValue) {
